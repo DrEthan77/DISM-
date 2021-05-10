@@ -10,7 +10,7 @@
     <Grid Margin="0,0,0,0">
         <TextBlock x:Name="CanvasLabel" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Create Image" VerticalAlignment="Top" Canvas.Left="164" Canvas.Top="-19" Margin="10,39,0,0" Width="404" TextAlignment="Center"/>
 
-        <Canvas Name="Create_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
+        <Canvas Name="Create_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404">
 
             <Button Canvas.Top="10" Width="16" Canvas.Left="127" Height="16" Click="FindImageFrom">
                 <Button.Content>
@@ -35,7 +35,7 @@
         <Canvas Name="Apply_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,34,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
             <Button Content="Button" Canvas.Top="10" Width="75" Canvas.Left="10"/>
         </Canvas>
-        <Canvas  Name="Diskpart_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404">
+        <Canvas  Name="Diskpart_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
             <Button Content="Button" Canvas.Top="67" Width="75" Canvas.Left="151"/>
         </Canvas>
         <Button Content="Create Image" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="95" Click="CreateImage"/>
