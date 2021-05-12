@@ -35,7 +35,7 @@ namespace DISM___
         {
             Process proc = new Process();
             proc.StartInfo.FileName = "dism.exe";
-//            proc.StartInfo.Arguments = "/Online /Disable-Feature:Microsoft-Hyper-V-All";
+            //            proc.StartInfo.Arguments = "/Online /Disable-Feature:Microsoft-Hyper-V-All";
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.Verb = "runas";
@@ -43,9 +43,23 @@ namespace DISM___
             proc.WaitForExit();
             int exitCode = proc.ExitCode;
         }
-
         private void Start_Click(object sender, RoutedEventArgs e)
         {
+        }
+        private void Start_Image_Click(object sender, RoutedEventArgs e)
+        {
+        }
+        private void FindImage(object sender, RoutedEventArgs e)
+        {
+            VistaOpenFileDialog openFileDialog = new VistaOpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                ImageFileFrom.Text = openFileDialog.FileName;
+        }
+        private void FindImageTo(object sender, RoutedEventArgs e)
+        {
+            VistaFolderBrowserDialog openFileDialog = new VistaFolderBrowserDialog();
+            if (openFileDialog.ShowDialog() == true)
+                ApplyImageTo.Text = openFileDialog.SelectedPath;
         }
         private void FindImageFrom(object sender, RoutedEventArgs e)
         {
@@ -53,7 +67,7 @@ namespace DISM___
             if (openFileDialog.ShowDialog() == true)
                 ImageFrom.Text = openFileDialog.SelectedPath;
         }
-        
+
         private void FindSaveTo(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -62,7 +76,7 @@ namespace DISM___
             saveFileDialog.DefaultExt = ".wim";
             saveFileDialog.FileName = "Image";
             if (saveFileDialog.ShowDialog() == true)
-               ImageTo.Text = saveFileDialog.FileName;
+                ImageTo.Text = saveFileDialog.FileName;
         }
         private void CreateImage(object sender, RoutedEventArgs e)
         {
