@@ -34,8 +34,8 @@ namespace DISM___
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Process proc = new Process();
-            proc.StartInfo.FileName = "dism.exe";
-            //            proc.StartInfo.Arguments = "/Online /Disable-Feature:Microsoft-Hyper-V-All";
+            proc.StartInfo.FileName = "DISM.exe";
+           proc.StartInfo.Arguments = "/Apply-Image /ImageFile:<path_to_image_file> [/SWMFile:<pattern>] /ApplyDir:<target_directory>";
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.Verb = "runas";
