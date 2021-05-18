@@ -18,6 +18,7 @@ using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
+using System.Threading.Tasks;
 
 namespace DISM___
 {
@@ -35,13 +36,18 @@ namespace DISM___
         {
             Process proc = new Process();
             proc.StartInfo.FileName = "DISM.exe";
-           proc.StartInfo.Arguments = "/Apply-Image /ImageFile:<path_to_image_file> [/SWMFile:<pattern>] /ApplyDir:<target_directory>";
+           proc.StartInfo.Arguments = "/Apply-Image /ImageFile:<"+ImageFileFrom.Text+">  /ApplyDir:<"+ApplyImageTo.Text+">";
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.Verb = "runas";
-            proc.Start();
+           
             proc.WaitForExit();
-            int exitCode = proc.ExitCode;
+            proc.Exited += new EventHandler(myProcess_Exited);
+            proc.Start();
+        }
+        private void myProcess_Exited(object sender, System.EventArgs e)
+        {
+            MessageBox.Show("done?");
         }
         private void Start_Click(object sender, RoutedEventArgs e)
         {
