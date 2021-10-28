@@ -6,20 +6,31 @@
     <RootNamespace>DISM____</RootNamespace>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <ApplicationIcon>bduck_floppy_Vx9_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="file-explorer-folder-libraries-icon-18298.png" />
+    <None Remove="giphy.gif" />
     <None Remove="kisspng-computer-icons-file-explorer-internet-explorer-5b1e670f8e8603.7503591815287191195838.jpg" />
+    <None Remove="mono-resfileopen.png" />
+    <None Remove="save-1779882-1518534.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.2.1" />
+    <PackageReference Include="System.Management" Version="5.0.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="file-explorer-folder-libraries-icon-18298.png" />
+    <Resource Include="giphy.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="kisspng-computer-icons-file-explorer-internet-explorer-5b1e670f8e8603.7503591815287191195838.jpg" />
+    <Resource Include="mono-resfileopen.png" />
+    <Resource Include="save-1779882-1518534.png" />
   </ItemGroup>
 
 </Project>
