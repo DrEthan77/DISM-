@@ -28,26 +28,104 @@ namespace DISM
         public MainWindow()
         {
             InitializeComponent();
-            CanvasLabel.Text = "Create Image";
-            Create_Image_Canvas.Visibility = Visibility.Visible;
-            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            CanvasLabel.Text = "Apply Image";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Visible;
             Completion_Canvas.Visibility = Visibility.Hidden;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Start_Apply_Image_Click(object sender, RoutedEventArgs e)
         {
-            Process proc = new Process();
-            proc.StartInfo.FileName = "DISM.exe";
-            proc.StartInfo.Arguments = "/Apply-Image /ImageFile:<" + ImageFileFrom.Text + ">  /ApplyDir:<" + ApplyImageTo.Text + ">";
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.CreateNoWindow = true;
-            proc.StartInfo.Verb = "runas";
+            if (ImageFileFrom.Text.Contains(".wim"))
+            {
+                Format_Bootable_part1();
 
-            proc.WaitForExit();
-            proc.Exited += new EventHandler(myProcess_Exited);
-            proc.Start();
+            }
+            else
+            {
+                MessageBox.Show("No image file selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-        private void myProcess_Exited(object sender, System.EventArgs e)
+        private void image()
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "DISM.exe";
+            p.StartInfo.Arguments = "/Apply-Image /ImageFile:" + ImageFileFrom.Text + " /index:1 /ApplyDir:" + ApplyImageTo.Text + " /CheckIntegrity /NoRpFix /Compact /EA";
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = false;
+            //proc.StartInfo.Verb = "runas";
+            p.Start();
+
+            p.WaitForExit();
+            Format_Bootable_part2();
+        }
+        private void Format_Bootable_part1()
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "diskpart.exe";
+            p.StartInfo.RedirectStandardInput = true;
+           // p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = false;
+            bool remove_s = false;
+            if (Directory.Exists(@"S:\"))
+            {
+                DriveInfo[] drives = DriveInfo.GetDrives();
+                for (int i = 0; i < drives.Length; i++)
+                {
+                    if (drives[i].RootDirectory.ToString().Contains("S") && drives[i].VolumeLabel.ToLower() != "system")
+                    {
+                        MessageBox.Show("A drive with mount point S already exists, removing mount point, you will have to remount it!!!!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        remove_s = true;
+                        break;
+                    }
+                }
+             }
+                p.Start();
+
+            if (remove_s) { 
+                p.StandardInput.WriteLine(@"select volume S:\");
+                p.StandardInput.WriteLine("remove letter S");
+            }
+            p.StandardInput.WriteLine("select volume "+ ApplyImageTo.Text);
+            p.StandardInput.WriteLine("clean");
+            p.StandardInput.WriteLine("convert gpt");
+            p.StandardInput.WriteLine("create partition efi size=250");
+            p.StandardInput.WriteLine("format quick fs=fat32 label=system");
+            p.StandardInput.WriteLine("assign letter S");
+            p.StandardInput.WriteLine("create partition primary");
+            p.StandardInput.WriteLine("assign letter " + ApplyImageTo.Text[0]);
+            p.StandardInput.WriteLine("format quick fs=ntfs");
+            p.StandardInput.WriteLine("exit");
+            //string output = p.StandardOutput.ReadToEnd();
+            //MessageBox.Show(output);
+            p.WaitForExit();
+            if (Directory.Exists(@"S:\"))
+            {
+                image();
+
+            }
+            else
+            {
+                Format_Bootable_part1();
+            }
+
+        }
+        private void Format_Bootable_part2()
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = false;
+            p.Start();
+            p.StandardInput.WriteLine("bcdboot " + ApplyImageTo.Text + "windows /s S: /f uefi");
+            p.StandardInput.WriteLine("exit");
+            p.WaitForExit();           
+            myProcess_Exited();
+        }
+        private void myProcess_Exited()
         {
             CanvasLabel.Text = "Proccess Complete!";
             Create_Image_Canvas.Visibility = Visibility.Hidden;
@@ -61,14 +139,13 @@ namespace DISM
             proc.StartInfo.Arguments = "/Capture-Image /ImageFile:" + ImageTo.Text + " /CaptureDir:" + ImageFrom.Text + " /Name:Drive-C /Compress:max /Bootable";
             proc.StartInfo.UseShellExecute = true;
             proc.StartInfo.CreateNoWindow = false;
-            proc.StartInfo.Verb = "runas";
             MessageBox.Show("running");
-            proc.Exited += new EventHandler(myProcess_Exited);
             try
             {
                 proc.Start();
                 proc.WaitForExit();
-                MessageBox.Show(proc.ExitCode.ToString());
+                myProcess_Exited();
+
             }
             catch (Exception ee)
             {
@@ -86,9 +163,9 @@ namespace DISM
             proc.StartInfo.CreateNoWindow = false;
             proc.StartInfo.Verb = "runas";
 //            MessageBox.Show(proc.ExitCode.ToString());
-            proc.Exited += new EventHandler(myProcess_Exited);
             proc.Start();
             proc.WaitForExit();
+            myProcess_Exited();
 
         }
         private void FindImage(object sender, RoutedEventArgs e)
@@ -103,6 +180,7 @@ namespace DISM
                 MessageBox.Show(ee.Message);
                 throw;
             }
+            
 }
         private void FindImageTo(object sender, RoutedEventArgs e)
         {
@@ -150,24 +228,7 @@ namespace DISM
             }
         }
 
-        private void Start_Apply_Image_Click(object sender, RoutedEventArgs e)
-        {
-            if (!FormatDrive_CommandLine(ApplyImageTo.Text.ElementAt(0)))
-                MessageBox.Show("Error failed to format drive");
-            else
-            {
-                Process proc = new Process();
-                proc.StartInfo.FileName = "DISM.exe";
-                proc.StartInfo.Arguments = "/Apply-Image /ImageFile:" + ImageFileFrom.Text + " /index:1 /ApplyDir:" + ApplyImageTo.Text + " /CheckIntegrity /NoRpFix /Compact /EA";
-                proc.StartInfo.UseShellExecute = true;
-                proc.StartInfo.CreateNoWindow = false;
-                proc.StartInfo.Verb = "runas";
-                proc.Exited += new EventHandler(myProcess_Exited);
-                proc.Start();
-
-                proc.WaitForExit();
-            }
-        }
+        
         private void CreateImage(object sender, RoutedEventArgs e)
         {
             CanvasLabel.Text = "Create Image";
@@ -192,44 +253,5 @@ namespace DISM
             Completion_Canvas.Visibility = Visibility.Visible;
         }
 
-        public static bool FormatDrive_CommandLine(char driveLetter, string label = "", string fileSystem = "NTFS", bool quickFormat = true, bool enableCompression = false, int? clusterSize = null)
-        {
-            #region args check
-
-            if (!Char.IsLetter(driveLetter))
-            {
-                return false;
-            }
-
-            #endregion
-            bool success = false;
-            string drive = driveLetter + ":";
-            try
-            {
-                var di = new DriveInfo(drive);
-                var psi = new ProcessStartInfo();
-                psi.FileName = "format.com";
-                psi.CreateNoWindow = true; //if you want to hide the window
-                psi.WorkingDirectory = Environment.SystemDirectory;
-                psi.Arguments = "/FS:" + fileSystem +
-                                             " /Y" +
-                                             " /V:" + label +
-                                             (quickFormat ? " /Q" : "") +
-                                             ((fileSystem == "NTFS" && enableCompression) ? " /C" : "") +
-                                             (clusterSize.HasValue ? " /A:" + clusterSize.Value : "") +
-                                             " " + drive;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardInput = true;
-                var formatProcess = Process.Start(psi);
-                var swStandardInput = formatProcess.StandardInput;
-                swStandardInput.WriteLine();
-                formatProcess.WaitForExit();
-                success = true;
-            }
-            catch (Exception) { }
-            return success;
-        }
     }
 }

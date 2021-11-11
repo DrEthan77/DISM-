@@ -32,7 +32,7 @@
             <Button Content="Save Image" Canvas.Left="319" Canvas.Top="261" Width="75" Click="Start_Click"/>
             <Image Height="144" Width="150" Canvas.Left="124" Canvas.Top="82" Source="/save-1779882-1518534.png"/>
         </Canvas>
-        <Canvas Name="Apply_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
+        <Canvas Name="Apply_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Visible">
             <Button Canvas.Top="10" Width="16" Canvas.Left="118" Height="16" Click="FindImage">
                 <Button.Content>
                     <Image Source="file-explorer-folder-libraries-icon-18298.png" IsEnabled="False"/>
@@ -54,7 +54,7 @@
             <Button Content="Apply Image" Canvas.Left="319" Canvas.Top="261" Width="75" Click="Start_Apply_Image_Click"/>
             <Image Height="144" Width="150" Canvas.Left="124" Canvas.Top="82" Source="/mono-resfileopen.png"/>
         </Canvas>
-        <Canvas  Name="Completion_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Visible">
+        <Canvas  Name="Completion_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
             <Image gif:ImageBehavior.AnimatedSource="\giphy.gif" Width="224" Height="224" Canvas.Top="52" />
             <Label Content="Process Complete!" Canvas.Top="-14" FontSize="50"/>
             <Image gif:ImageBehavior.AnimatedSource="/giphy.gif" Width="224" Height="224" Canvas.Left="180" Canvas.Top="52" RenderTransformOrigin="0.5,0.5" >
@@ -68,8 +68,8 @@
                 </Image.RenderTransform>
             </Image>
         </Canvas>
-        <Button Content="Create Image" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="95" Click="CreateImage"/>
-        <Button Content="Apply Image" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="95" Click="ApplyImage"/>
+        <Button Content="Create Image" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="95" Click="CreateImage"/>
+        <Button Content="Apply Image" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="95" Click="ApplyImage"/>
 
 
     </Grid>
