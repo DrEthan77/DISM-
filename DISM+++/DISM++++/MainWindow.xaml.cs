@@ -146,6 +146,18 @@ namespace DISM
             Create_Image_Canvas.Visibility = Visibility.Hidden;
             Apply_Image_Canvas.Visibility = Visibility.Hidden;
             Completion_Canvas.Visibility = Visibility.Visible;
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
         }
         private void Start_Click(object sender, RoutedEventArgs e)
         {
