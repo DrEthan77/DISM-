@@ -121,9 +121,24 @@ namespace DISM
             p.StartInfo.CreateNoWindow = false;
             p.Start();
             p.StandardInput.WriteLine("bcdboot " + ApplyImageTo.Text + "windows /s S: /f uefi");
-            p.StandardInput.WriteLine("exit");
-            p.WaitForExit();           
+            p.StandardInput.WriteLine("exit");     
             myProcess_Exited();
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
+            CanvasLabel.Text = "Proccess Complete!";
+            Create_Image_Canvas.Visibility = Visibility.Hidden;
+            Apply_Image_Canvas.Visibility = Visibility.Hidden;
+            Completion_Canvas.Visibility = Visibility.Visible;
         }
         private void myProcess_Exited()
         {
@@ -139,7 +154,6 @@ namespace DISM
             proc.StartInfo.Arguments = "/Capture-Image /ImageFile:" + ImageTo.Text + " /CaptureDir:" + ImageFrom.Text + " /Name:Drive-C /Compress:max /Bootable";
             proc.StartInfo.UseShellExecute = true;
             proc.StartInfo.CreateNoWindow = false;
-            MessageBox.Show("running");
             try
             {
                 proc.Start();
