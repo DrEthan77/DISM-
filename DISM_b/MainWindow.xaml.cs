@@ -33,39 +33,22 @@ namespace DISM
             Apply_Image_Canvas.Visibility = Visibility.Visible;
             Completion_Canvas.Visibility = Visibility.Hidden;
         }
-
+        //Runs when apply image is clicked
         private void Start_Apply_Image_Click(object sender, RoutedEventArgs e)
         {
-            if (ImageFileFrom.Text.Contains(".wim"))
-            {
+            if (ImageFileFrom.Text.Contains(".wim"))            
                 Format_Bootable_part1();
-
-            }
             else
-            {
                 MessageBox.Show("No image file selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
-        private void image()
-        {
-            Process p = new Process();
-            p.StartInfo.FileName = "DISM.exe";
-            p.StartInfo.Arguments = "/Apply-Image /ImageFile:" + ImageFileFrom.Text + " /index:1 /ApplyDir:" + ApplyImageTo.Text + " /CheckIntegrity /NoRpFix /Compact /EA";
-            p.StartInfo.RedirectStandardInput = true;
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = false;
-            //proc.StartInfo.Verb = "runas";
-            p.Start();
-
-            p.WaitForExit();
-            Format_Bootable_part2();
-        }
+        public static int TimesPt1HasRun;
+        //Formats the drive to allow for the imaging process
         private void Format_Bootable_part1()
         {
             Process p = new Process();
             p.StartInfo.FileName = "diskpart.exe";
             p.StartInfo.RedirectStandardInput = true;
-           // p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = false;
             bool remove_s = false;
@@ -81,9 +64,8 @@ namespace DISM
                         break;
                     }
                 }
-             }
-                p.Start();
-
+            }
+            p.Start();
             if (remove_s) { 
                 p.StandardInput.WriteLine(@"select volume S:\");
                 p.StandardInput.WriteLine("remove letter S");
@@ -97,21 +79,43 @@ namespace DISM
             p.StandardInput.WriteLine("create partition primary");
             p.StandardInput.WriteLine("assign letter " + ApplyImageTo.Text[0]);
             p.StandardInput.WriteLine("format quick fs=ntfs");
-            p.StandardInput.WriteLine("exit");
-            //string output = p.StandardOutput.ReadToEnd();
-            //MessageBox.Show(output);
+            p.StandardInput.WriteLine("exit");            
             p.WaitForExit();
             if (Directory.Exists(@"S:\"))
             {
                 image();
-
             }
             else
             {
-                Format_Bootable_part1();
+                if (TimesPt1HasRun < 4)
+                {
+                    Format_Bootable_part1();
+                    TimesPt1HasRun++;
+                }
+                else
+                {
+                    MessageBox.Show("Diskpart failed too many times, showing output. " +
+                        "(I recomend manually wiping the disk using partition wizard and creating a new partition on it with the label C, " +
+                        "then rerunning DISM.b)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    string output = p.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);                    
+                }
             }
-
         }
+        //Runs DISM command to image the computer with selected image
+        private void image()
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "DISM.exe";
+            p.StartInfo.Arguments = "/Apply-Image /ImageFile:" + ImageFileFrom.Text + " /index:1 /ApplyDir:" + ApplyImageTo.Text + " /CheckIntegrity /NoRpFix /Compact /EA";
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = false;
+            p.Start();
+            p.WaitForExit();
+            Format_Bootable_part2();
+        }
+        //Creates the Windows Boot Manager on the automatically created system partition from part 1
         private void Format_Bootable_part2()
         {
             Process p = new Process();
@@ -140,6 +144,7 @@ namespace DISM
             Apply_Image_Canvas.Visibility = Visibility.Hidden;
             Completion_Canvas.Visibility = Visibility.Visible;
         }
+        //You will see this stuff run 4 times because for some reason if it is run only once it doesnt actually show
         private void myProcess_Exited()
         {
             CanvasLabel.Text = "Proccess Complete!";
@@ -159,7 +164,8 @@ namespace DISM
             Apply_Image_Canvas.Visibility = Visibility.Hidden;
             Completion_Canvas.Visibility = Visibility.Visible;
         }
-        private void Start_Click(object sender, RoutedEventArgs e)
+        //Starts the wim capture process.
+        private void Capture_Start_Click(object sender, RoutedEventArgs e)
         {
             Process proc = new Process();
             proc.StartInfo.FileName = "DISM.exe";
@@ -171,43 +177,47 @@ namespace DISM
                 proc.Start();
                 proc.WaitForExit();
                 myProcess_Exited();
-
+                CanvasLabel.Text = "Proccess Complete!";
+                Create_Image_Canvas.Visibility = Visibility.Hidden;
+                Apply_Image_Canvas.Visibility = Visibility.Hidden;
+                Completion_Canvas.Visibility = Visibility.Visible;
+                CanvasLabel.Text = "Proccess Complete!";
+                Create_Image_Canvas.Visibility = Visibility.Hidden;
+                Apply_Image_Canvas.Visibility = Visibility.Hidden;
+                Completion_Canvas.Visibility = Visibility.Visible;
+                CanvasLabel.Text = "Proccess Complete!";
+                Create_Image_Canvas.Visibility = Visibility.Hidden;
+                Apply_Image_Canvas.Visibility = Visibility.Hidden;
+                Completion_Canvas.Visibility = Visibility.Visible;
+                CanvasLabel.Text = "Proccess Complete!";
+                Create_Image_Canvas.Visibility = Visibility.Hidden;
+                Apply_Image_Canvas.Visibility = Visibility.Hidden;
+                Completion_Canvas.Visibility = Visibility.Visible;
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                MessageBox.Show(ee.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
-            }
-            
+            }            
         }
-        private void Start_Image_Click(object sender, RoutedEventArgs e)
-        {
-            Process proc = new Process();
-            proc.StartInfo.FileName = "DISM.exe";
-            proc.StartInfo.Arguments = "/Capture-Image /ImageFile:"+ImageFileFrom.Text+" /CaptureDir:"+ApplyImageTo.Text+" /Name:Drive-C /Compress:max /Bootable";
-            proc.StartInfo.UseShellExecute = true;
-            proc.StartInfo.CreateNoWindow = false;
-            proc.StartInfo.Verb = "runas";
-//            MessageBox.Show(proc.ExitCode.ToString());
-            proc.Start();
-            proc.WaitForExit();
-            myProcess_Exited();
-
-        }
+        //Opens file explorer to find the .wim image to use to image the computer
         private void FindImage(object sender, RoutedEventArgs e)
         {
             try { 
             VistaOpenFileDialog openFileDialog = new VistaOpenFileDialog();
+                openFileDialog.InitialDirectory = @"P:\";
+                openFileDialog.Filter = "WIM Image Files (*.wim)|*.wim|All Files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
                 ImageFileFrom.Text = openFileDialog.FileName;
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                MessageBox.Show(ee.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
             
-}
+        }
+        //Opens folder explorer to find the folder to image to
         private void FindImageTo(object sender, RoutedEventArgs e)
         {
             try { 
@@ -217,10 +227,11 @@ namespace DISM
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                MessageBox.Show(ee.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         }
+        //Opens folder explorer to find the the folder to image from
         private void FindImageFrom(object sender, RoutedEventArgs e)
         {
             try
@@ -231,11 +242,11 @@ namespace DISM
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                MessageBox.Show(ee.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         }
-
+        //Opens the file explorer so you can choose where to save the wim
         private void FindSaveTo(object sender, RoutedEventArgs e)
         {
             try { 
@@ -249,12 +260,11 @@ namespace DISM
             }
             catch (Exception ee)
             {
-                MessageBox.Show(ee.Message);
+                MessageBox.Show(ee.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         }
-
-        
+        //Switches Main Window view to the create image view  
         private void CreateImage(object sender, RoutedEventArgs e)
         {
             CanvasLabel.Text = "Create Image";
@@ -262,7 +272,7 @@ namespace DISM
             Apply_Image_Canvas.Visibility = Visibility.Hidden;
             Completion_Canvas.Visibility = Visibility.Hidden;
         }
-
+        //Switches Main Window view to the apply image view 
         private void ApplyImage(object sender, RoutedEventArgs e)
         {
             CanvasLabel.Text = "Apply Image";
@@ -270,14 +280,5 @@ namespace DISM
             Apply_Image_Canvas.Visibility = Visibility.Visible;
             Completion_Canvas.Visibility = Visibility.Hidden;
         }
-
-        private void DiskPart(object sender, RoutedEventArgs e)
-        {
-            CanvasLabel.Text = "Disk Part";
-            Create_Image_Canvas.Visibility = Visibility.Hidden;
-            Apply_Image_Canvas.Visibility = Visibility.Hidden;
-            Completion_Canvas.Visibility = Visibility.Visible;
-        }
-
     }
 }

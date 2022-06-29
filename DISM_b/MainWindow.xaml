@@ -10,7 +10,7 @@
         " WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Grid Margin="0,0,0,0">
         <TextBlock x:Name="CanvasLabel" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Create Image" VerticalAlignment="Top" Canvas.Left="164" Canvas.Top="-19" Margin="10,39,0,0" Width="404" TextAlignment="Center" Visibility="Visible"/>
-        <Canvas Name="Create_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
+        <Canvas Name="Create_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Visible">
             <Button Canvas.Top="10" Width="16" Canvas.Left="127" Height="16" Click="FindImageFrom">
                 <Button.Content>
                     <Image Source="file-explorer-folder-libraries-icon-18298.png" IsEnabled="False"/>
@@ -29,10 +29,10 @@
             </Button>
             <TextBlock Canvas.Left="10" TextWrapping="Wrap" Canvas.Top="31" Height="16"><Run Text="Save Location"/><LineBreak/><Run/></TextBlock>
             <TextBox Name="ImageTo"  Height="16" Canvas.Left="109" TextWrapping="Wrap" Text="C:\" Canvas.Top="31" Width="261" />
-            <Button Content="Save Image" Canvas.Left="319" Canvas.Top="261" Width="75" Click="Start_Click"/>
+            <Button Content="Save Image" Canvas.Left="319" Canvas.Top="261" Width="75" Click="Capture_Start_Click"/>
             <Image Height="144" Width="150" Canvas.Left="124" Canvas.Top="82" Source="/save-1779882-1518534.png"/>
         </Canvas>
-        <Canvas Name="Apply_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Visible">
+        <Canvas Name="Apply_Image_Canvas" HorizontalAlignment="Left" Height="290" Margin="10,55,0,0" VerticalAlignment="Top" Width="404" Visibility="Hidden">
             <Button Canvas.Top="10" Width="16" Canvas.Left="118" Height="16" Click="FindImage">
                 <Button.Content>
                     <Image Source="file-explorer-folder-libraries-icon-18298.png" IsEnabled="False"/>
@@ -42,7 +42,7 @@
                 </Button.Background>
             </Button>
             <TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="Image File Location" Canvas.Top="10"/>
-            <TextBox Name="ImageFileFrom" Height="16" Canvas.Left="139" TextWrapping="Wrap" Text="C:\" Canvas.Top="9" Width="231"/>
+            <TextBox Name="ImageFileFrom" Height="16" Canvas.Left="139" TextWrapping="Wrap" Text="P:\" Canvas.Top="9" Width="231"/>
             <Button Canvas.Top="31" Width="16" Canvas.Left="97" Height="16" Click="FindImageTo">
                 <Button.Background>
                     <ImageBrush ImageSource="file-explorer-folder-libraries-icon-18298.png"/>
