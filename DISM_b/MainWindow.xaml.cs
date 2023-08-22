@@ -20,12 +20,14 @@ using System.Management;
 
 namespace DISM
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public static string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+		public static int TimesPt1HasRun;
+		public MainWindow()
         {
             InitializeComponent();
             CanvasLabel.Text = "Apply Image";
@@ -36,16 +38,20 @@ namespace DISM
         //Runs when apply image is clicked
         private void Start_Apply_Image_Click(object sender, RoutedEventArgs e)
         {
-            if (ImageFileFrom.Text.Contains(".wim"))            
-                Format_Bootable_part1();
+
+            if (ImageFileFrom.Text.Contains(".wim"))
+            {
+				TimesPt1HasRun = 0;
+				Format_Bootable_part1();            
+            }
             else
                 MessageBox.Show("No image file selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        public static int TimesPt1HasRun;
+        
         //Formats the drive to allow for the imaging process
         private void Format_Bootable_part1()
-        {
-            Process p = new Process();
+        {			
+			Process p = new Process();
             p.StartInfo.FileName = "diskpart.exe";
             p.StartInfo.RedirectStandardInput = true;
             p.StartInfo.RedirectStandardOutput = true;
@@ -84,24 +90,27 @@ namespace DISM
             if (Directory.Exists(@"S:\"))
             {
                 image();
+                return;
             }
             else
             {
                 if (TimesPt1HasRun < 4)
                 {
-                    Format_Bootable_part1();
-                    TimesPt1HasRun++;
+					TimesPt1HasRun++;
+					Format_Bootable_part1();
+                    return;
                 }
                 else
                 {
                     MessageBox.Show("Diskpart failed too many times, showing output. " +
-                        "(I recomend manually wiping the disk using partition wizard and creating a new partition on it with the label C, " +
+                        "(I recommend manually wiping the disk using partition wizard and creating a new partition on it with the label C, " +
                         "then rerunning DISM.b)", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     string output = p.StandardOutput.ReadToEnd();
-                    MessageBox.Show(output);                    
+                    MessageBox.Show(output);
+                    return;
                 }
-            }
-        }
+            }			
+		}
         //Runs DISM command to image the computer with selected image
         private void image()
         {
@@ -280,5 +289,10 @@ namespace DISM
             Apply_Image_Canvas.Visibility = Visibility.Visible;
             Completion_Canvas.Visibility = Visibility.Hidden;
         }
-    }
+
+		private void CheckVersion(object sender, RoutedEventArgs e)
+		{
+            MessageBox.Show("Current version #" + Version);
+		}
+	}
 }

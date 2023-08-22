@@ -7,6 +7,8 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <ApplicationIcon>bduck_floppy_Vx9_icon.ico</ApplicationIcon>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
