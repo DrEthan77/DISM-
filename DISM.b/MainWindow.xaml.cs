@@ -46,8 +46,7 @@ namespace DISM
             }
             else
                 MessageBox.Show("No image file selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        
+        }        
         //Formats the drive to allow for the imaging process
         private void Format_Bootable_part1()
         {			
